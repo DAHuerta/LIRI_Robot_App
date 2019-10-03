@@ -12,8 +12,6 @@ var spotify = new Spotify({
 
 });
 
-var defaultSong = "L$D"
-var defaultMovie = "Interstellar";
 var spotify = new Spotify(keys.spotify);
 
 var command = process.argv[2];
@@ -29,9 +27,6 @@ switch (command) {
         break;
 
     case "movies-this":
-        if (value == "") {
-            value = defaultMovie;
-        }
         movies(value)
         break;
 
@@ -45,16 +40,23 @@ switch (command) {
 
 function bands(artist) {
 
+    if (!artist) {
+        artist = "Jose Gonzalez"
+    }
+
 axios.get(`https://rest.bandsintown.com/artists/${artist}/events?app_id=codingbootcamp`)
     .then(function (response) {
+        
+        for (var i = 0; i < response.data.length; i++) {
 
-        console.log("location: ", response.data[0].venue.city)
-        console.log("Venue: ", response.data[0].venue.name)
-
-        var eventDate = moment(response.data[0].datetime).format("MM/DD/YYYY");
-
-        console.log("Date: ", eventDate);
-
+            console.log("location: ", response.data[i].venue.city)
+            console.log("Venue: ", response.data[i].venue.name)
+            
+            var eventDate = moment(response.data[i].datetime).format("MM/DD/YYYY");
+            
+            console.log("Date: ", eventDate);
+            
+        }
     })
     .catch(function (err) {
         console.log(err);
@@ -63,7 +65,7 @@ axios.get(`https://rest.bandsintown.com/artists/${artist}/events?app_id=codingbo
 
 function songs(trackName) {
 
-if (trackName === "") {
+if (!trackName) {
     trackName = "L$D"
 }
 
@@ -81,10 +83,14 @@ spotify.search({type: 'track', query: trackName },function (err, data) {
 
 function movies(movieTitle) {
 
+    if (!movieTitle) {
+        movieTitle = "Interstellar"
+    } 
+
 axios.get(`http://www.omdbapi.com/?apikey=trilogy&t=${movieTitle}`)
     .then(function (response) {
-
-        var results = `Title: ${response.data.Title} \nRelease Year: ${response.data.Year} \n Imdb Rating: ${response.data.Rating} \nRotten Tomatoes Rating: ${response.data.Rating[1].Value} Plot: ${response.data.Plot} \nActors: ${response.data.Actors}`;
+        // console.log(response.data.Ratings[1])
+        var results = `Title: ${response.data.Title} \nRelease Year: ${response.data.Year} \nImdb Rating: ${response.data.Ratings[0].Value} \nRotten Tomatoes Rating: ${response.data.Ratings[1].Value} \nPlot: ${response.data.Plot} \nActors: ${response.data.Actors}`;
 
         console.log(results)
 
