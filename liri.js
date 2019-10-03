@@ -3,9 +3,9 @@ require("dotenv").config();
 var keys = require("./keys");
 var axios = require("axios");
 var moment = require("moment");
-var spotify = require("node-spotify-api");
+var Spotify = require("node-spotify-api");
 var fs = require("fs");
-var spotify = new spotify({
+var spotify = new Spotify({
 
     id: keys.spotify.id,
     secret: keys.spotify.secret,
@@ -118,7 +118,9 @@ function readFile() {
                 movies(value)
                 break;
 
-        }
+            default:
+                break;
 
-    })
+        }
+    });
 }
